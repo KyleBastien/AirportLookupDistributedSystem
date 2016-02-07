@@ -62,7 +62,7 @@ placesprog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 
 
 static const char filename[] = "places2k.txt";
-static trieNode_t *root;
+trieNode_t *root;
 
 // struct to store place (line in text file)
 struct place {

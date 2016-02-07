@@ -15,6 +15,8 @@ typedef struct trieNode {
     struct trieNode *parent;
 } trieNode_t;
  
+extern trieNode_t *root;
+
 void TrieCreate(trieNode_t **root);
 trieNode_t* TrieSearch(trieNode_t *root, const char *key);
 trieNode_t* TrieSearchPartial(trieNode_t *root, const char *key);

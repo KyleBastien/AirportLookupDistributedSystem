@@ -12,7 +12,7 @@ SOURCES_SVC.c =
 SOURCES_SVC.h = 
 SOURCES.x = places.x airports.x
 
-TARGETS_SVC.c = places_svc.c places_server.c places_xdr.c airports_svc.c airports_server.c airports_xdr.c
+TARGETS_SVC.c = places_svc.c places_server.c places_xdr.c airports_svc.c airports_server.c airports_xdr.c trie.c
 TARGETS_CLNT.c = places_clnt.c places_client.c places_xdr.c airports_clnt.c airports_xdr.c
 TARGETS = places.h places_xdr.c places_clnt.c places_svc.c places_client.c places_server.c airports.h airports_xdr.c airports_clnt.c airports_svc.c airports_se\
 rver.c

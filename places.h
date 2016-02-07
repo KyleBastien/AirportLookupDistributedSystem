@@ -15,8 +15,6 @@ extern "C" {
 
 #define MAXLEN 255
 
-extern trieNode_t *root;
-
 typedef char *placestype;
 
 typedef struct {
