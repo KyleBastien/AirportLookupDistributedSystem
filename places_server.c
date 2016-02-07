@@ -6,6 +6,7 @@
 
 #include "places.h"
 #include "airports.h"
+#include "trie.h"
 
 struct coordinates *coord; 
 
