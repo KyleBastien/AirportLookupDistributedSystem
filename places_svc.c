@@ -5,6 +5,7 @@
 
 #include "places.h"
 #include "airports.h"
+#include "trie.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <rpc/pmap_clnt.h>
@@ -61,6 +62,7 @@ placesprog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 
 
 static const char filename[] = "places2k.txt";
+trieNode_t *root;
 
 // struct to store place (line in text file)
 struct place {
@@ -94,7 +96,7 @@ Place *  parseLine(char * line){
   strncpy(p->state, line, 2);   // state
 
   strncpy(temp, line+143, 10);  
-  p->latitude = atof(temp);     // latitiude
+  p->latitude = atof(temp);     // latitude
 
   strncpy(temp, line+153, 11);  // longitude
   p->longitude = atof(temp);
@@ -119,9 +121,23 @@ void readFile() {
 	while (fgets(line, sizeof line, file) != NULL) { //read line
 	  // parse line and get data in struct
 	  Place *p = parseLine(line);
+	  char place_name[66];
+	  int i = 0;
 
-	  // TODO: Use Place struct store in datastructure
-	 
+	  // concatenate state and city names and convert to lowercase to form a single unique entry to add to trie
+	  // "state|city" eg. "Seattle, WA" becomes "waseattle"
+	  strcat(place_name, p->state);
+	  strcat(place_name, p->name);
+	  for (i = 0; place_name[i]; i++)
+	  {
+	  	place_name[i] = tolower(place_name[i]);
+	  }
+
+	  // add new entry to trie
+	  TrieAdd(&root, place_name, p->latitude, p->longitude);
+
+	  // discard p, its data has been added to trie so it's no longer needed
+	  free(p);
 	}
 	fclose(file);
   }
@@ -155,12 +171,15 @@ main (int argc, char **argv)
 		exit(1);
 	}
 
+	TrieCreate(&root);
+
 	readFile(); // reads the file and parses each line
 
 	svc_run();
 	fprintf (stderr, "%s", "svc_run returned");
 	
-	
+	TrieDestroy(root);
+
 	exit (1);
 	/* NOTREACHED */
 }

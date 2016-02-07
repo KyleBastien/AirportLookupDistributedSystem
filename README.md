@@ -16,8 +16,8 @@ A Distributed System for looking up the Five Nearest Airport given a City and St
 - [ ] Add code to do the following:
 - [x] Read places2k.txt
 - [x] Parse the line that is read and store in a place structure
-- [ ] Create prefix tree
-- [ ] Insert place in prefix tree
+- [x] Create prefix tree
+- [x] Insert place in prefix tree
 
  
 
