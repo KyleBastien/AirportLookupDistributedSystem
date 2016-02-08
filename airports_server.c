@@ -62,7 +62,7 @@ double rad2deg(double rad) {
 /*:: Hexa Software Development Center © All Rights Reserved 2004 :*/
 /*:: :*/
 /*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
-/*
+
 double distance(double lat1, double lon1, double lat2, double lon2, char unit) {
   double theta, dist;
   theta = lon1 - lon2;
@@ -82,4 +82,4 @@ double distance(double lat1, double lon1, double lat2, double lon2, char unit) {
   }
   return (dist);
 }
-*/
+

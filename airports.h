@@ -6,7 +6,7 @@
 #ifndef _AIRPORTS_H_RPCGEN
 #define _AIRPORTS_H_RPCGEN
 
-#include <rpc/rpc.h>
+//#include <rpc/rpc.h>
 
 
 #ifdef __cplusplus
