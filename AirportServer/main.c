@@ -97,29 +97,9 @@ typedef struct  {
 }airportsnode;
 
 
-//___insertion sort of array
-void sortAirportsByDistance(Airport airports[], int size) {
-    int i;
-    for (i = 1; i < size; i++) {
-        int iDoSwap = 1;
-        int j;
-        for (j = i; j > 0 && iDoSwap; j--) 
-        {
-            if( airports[j].dist > airports[-1].dist ) iDoSwap = 0;
-            if (iDoSwap) {
-                Airport temp;
-                temp = airports[j];
-                airports[j] = airports[j - 1];
-                airports[j - 1] = temp;
-            }
-        }
-    }
-}
-
 
 airportslist sortAndAddAirports(int countRequired, float searchOrigin[]) {
     //____first populate an array with results
-
     int countFound = 0;
     float range = .5;
     struct kdres *rangeSearchResult = kd_nearest_rangef(kd, searchOrigin, range);
@@ -146,7 +126,7 @@ airportslist sortAndAddAirports(int countRequired, float searchOrigin[]) {
         /* go to the next entry */
         kd_res_next(rangeSearchResult);
     }
-
+//___insertion sort of array
     for (i = 1; i < rangeSize; i++) {
         int iDoSwap = 1;
         int j;
@@ -161,10 +141,9 @@ airportslist sortAndAddAirports(int countRequired, float searchOrigin[]) {
             }
         }
     }
-    //sortAirportsByDistance(airports, rangeSize);
+
     airportslist result = malloc(sizeof(airportslist));
     
-    //*result = iterator;
     for (i=0; i<countRequired; i++)
     {
         // need to fill result from sorted array here
@@ -229,32 +208,25 @@ void readFile() {
             if (strchr(line, ',')) {
                 Airport *a = parseLine(line);
                 float coords[] = {a->latitude, a->longitude};
-
                 kd_insertf(kd, coords, a);
             }
-            // TODO: Use Airport struct store in datastructure
-
-        }
+         }
         fclose(file);
     }
 }
 
+//__for debugging & development only
 void printResults(struct kdres *results, double origin[]) {
     double position[2];
 
     while (!kd_res_end(results)) {
-        /* get the data and position of the current result item */
+        // get the data and position of the current result item */
         Airport * airport = (Airport*) kd_res_item(results, position);
-
-        /* compute the distance of the current result from the pt */
-        //#### ToDo
-
-        /* print out the retrieved data */
 
         double dist = distance(position[0], position[1], origin[0], origin[1], 'M');
         printf("Code %s, Name %s, Distance %.3f\n", *airport->code, *airport->name, dist);
 
-        /* go to the next entry */
+        // go to the next entry */
         kd_res_next(results);
     }
 }
@@ -285,10 +257,13 @@ int main(int argc, char **argv) {
                 exit(1);
         }
      */
-
+    
+    //__this will create and populate the KD tree
     kd = kd_create(2);
-    readFile(); //kd);
+    readFile(); 
     //svc_run ();
+    
+    /* these lines were for debugging only
     float coords[2] = {40.0f, -80.0f};
     sortAndAddAirports(5, coords);
     double origin[2] = {40.0, -80.0};
@@ -296,7 +271,7 @@ int main(int argc, char **argv) {
     printf("found %d results:\n", kd_res_size(searchResults));
 
     printResults(searchResults, origin);
-
+*/
 
     exit(1);
     /* NOTREACHED */
