@@ -5,48 +5,78 @@
  */
 
 #include "places.h"
+#include "trie.h"
 #include "airports.h"
 
-struct coordinates *coord; 
-
+// function to call airports_server
+/*
 void
-airportsprog_1(struct location * argp)
+airportsprog_1(char *host)
 {
   CLIENT *clnt;
   readairports_ret  *result_1;
-  struct coordinates  get_aiports_1_arg;
+  struct coordinates  get_airports_1_arg;
 
 #ifndef DEBUG
-  clnt = clnt_create (argp->host, AIRPORTSPROG, AIRPORTS_VERS, "udp");
+  clnt = clnt_create (host, AIRPORTSPROG, AIRPORTS_VERS, "udp");
   if (clnt == NULL) {
-	clnt_pcreateerror (argp->host);
+	clnt_pcreateerror (host);
 	exit (1);
   }
-#endif  /* DEBUG */
+#endif  ///* DEBUG */
 
-  //TODO: pass lat/long in get_airports_1 function.
-  //      for now, there is a placeholder called coord (struct defined above)
-  result_1 = get_aiports_1(&get_aiports_1_arg, clnt);
-  // result_1 = get_aiports_1(coord, clnt);
+  result_1 = get_airports_1(&get_airports_1_arg, clnt);
   if (result_1 == (readairports_ret *) NULL) {
 	clnt_perror (clnt, "call failed");
   }
 #ifndef DEBUG
   clnt_destroy (clnt);
-#endif   /* DEBUG */
-}
+#endif  // /* DEBUG */
+}*/
 
-// TODO: This function gets the location (lat, long) from the datastructure
+
 readplaces_ret *
 get_places_1_svc(struct location *argp, struct svc_req *rqstp)
 {
-  static readplaces_ret  result;
+	static readplaces_ret  result;
+	
+	
+	trieNode_t *search_result;
+	placeslist * list;	
+	char place_name[66];
+	placeslist temp;
+	int i = 0;
+	
+	//strcat(place_name, argp->state);
+	//strcat(place_name, argp->city);
 
-  /*
-   * insert server code here
-   */
-  
-  //TODO: Call airportsprog_1 from here to pass lat/long.
-  airportsprog_1(argp);
-  return &result;
+	//xdr_free((xdrproc_t)xdr_readplaces_ret, (char *)&result.readplaces_ret_u.list);
+	
+	//list = &result.readplaces_ret_u.list;
+
+	char merge[255];
+	strcpy(merge, argp->state);
+	strcat(merge, argp->city);
+
+	//strcat(place_name, p->name);
+	//printf("Place_Name: %s", place_name);
+	for (i = 0; merge[i]; i++)
+	  {
+		merge[i] = tolower(merge[i]);
+	  }
+
+	
+	//printf("Merged: %s\n", merge);
+	
+	search_result = TrieSearchPartial(root->children,merge);
+
+	// found places now make a call to airport_server
+	if (search_result) {
+	  //airportsprog_1(argp->host);	
+	}
+	// printf("Found %s, lat:%f lon:%f\n", merge, search_result->latitude, search_result->longitude);		
+
+	return &result;
 }
+
+

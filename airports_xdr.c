@@ -3,28 +3,7 @@
  * It was generated using rpcgen.
  */
 
-#include "places_airports.h"
-
-bool_t
-xdr_airportstype (XDR *xdrs, airportstype *objp)
-{
-	register int32_t *buf;
-
-	 if (!xdr_string (xdrs, objp, MAXLEN))
-		 return FALSE;
-	return TRUE;
-}
-
-bool_t
-xdr_airportsnum (XDR *xdrs, airportsnum *objp)
-{
-	register int32_t *buf;
-
-	 if (!xdr_array (xdrs, (char **)&objp->airportsnum_val, (u_int *) &objp->airportsnum_len, MAXLEN,
-		sizeof (float), (xdrproc_t) xdr_float))
-		 return FALSE;
-	return TRUE;
-}
+#include "airports.h"
 
 bool_t
 xdr_airportslist (XDR *xdrs, airportslist *objp)
@@ -41,13 +20,14 @@ xdr_airportsnode (XDR *xdrs, airportsnode *objp)
 {
 	register int32_t *buf;
 
-	 if (!xdr_airportstype (xdrs, &objp->code))
+	 if (!xdr_string (xdrs, &objp->code, ~0))
 		 return FALSE;
-	 if (!xdr_airportstype (xdrs, &objp->name))
+	 if (!xdr_string (xdrs, &objp->name, ~0))
 		 return FALSE;
-	 if (!xdr_airportstype (xdrs, &objp->state))
+	 if (!xdr_string (xdrs, &objp->state, ~0))
 		 return FALSE;
-	 if (!xdr_airportsnum (xdrs, &objp->distance))
+	 if (!xdr_array (xdrs, (char **)&objp->distance.distance_val, (u_int *) &objp->distance.distance_len, ~0,
+		sizeof (float), (xdrproc_t) xdr_float))
 		 return FALSE;
 	 if (!xdr_airportslist (xdrs, &objp->next))
 		 return FALSE;
@@ -59,9 +39,9 @@ xdr_coordinates (XDR *xdrs, coordinates *objp)
 {
 	register int32_t *buf;
 
-	 if (!xdr_airportsnum (xdrs, &objp->lattitude))
+	 if (!xdr_float (xdrs, &objp->lattitude))
 		 return FALSE;
-	 if (!xdr_airportsnum (xdrs, &objp->longitude))
+	 if (!xdr_float (xdrs, &objp->longitude))
 		 return FALSE;
 	return TRUE;
 }

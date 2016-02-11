@@ -28,6 +28,6 @@ union readairports_ret switch (int err) {
 /*IDL program*/
 program AIRPORTSPROG {
         version AIRPORTS_VERS {
-                readairports_ret get_airports(struct coordinates) = 1;
+                readairports_ret get_aiports(struct coordinates) = 1;
                 } = 1;
 } = 0x37777783;

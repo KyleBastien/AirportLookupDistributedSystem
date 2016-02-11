@@ -12,7 +12,7 @@ airportsprog_1(char *host)
 {
 	CLIENT *clnt;
 	readairports_ret  *result_1;
-	struct coordinates  get_aiports_1_arg;
+	struct coordinates  get_airports_1_arg;
 
 #ifndef	DEBUG
 	clnt = clnt_create (host, AIRPORTSPROG, AIRPORTS_VERS, "udp");
@@ -22,7 +22,7 @@ airportsprog_1(char *host)
 	}
 #endif	/* DEBUG */
 
-	result_1 = get_aiports_1(&get_aiports_1_arg, clnt);
+	result_1 = get_airports_1(&get_airports_1_arg, clnt);
 	if (result_1 == (readairports_ret *) NULL) {
 		clnt_perror (clnt, "call failed");
 	}

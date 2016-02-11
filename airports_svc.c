@@ -5,6 +5,8 @@
 
 #include "airports.h"
 #include "kdtree.h"
+#include <assert.h>
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <rpc/pmap_clnt.h>
@@ -12,7 +14,7 @@
 #include <memory.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <ctype.h>
+
 
 #ifndef SIG_PF
 #define SIG_PF void(*)(int)
@@ -22,7 +24,7 @@ static void
 airportsprog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 {
 	union {
-		struct coordinates get_aiports_1_arg;
+		struct coordinates get_airports_1_arg;
 	} argument;
 	char *result;
 	xdrproc_t _xdr_argument, _xdr_result;
@@ -33,10 +35,10 @@ airportsprog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 		(void) svc_sendreply (transp, (xdrproc_t) xdr_void, (char *)NULL);
 		return;
 
-	case get_aiports:
+	case get_airports:
 		_xdr_argument = (xdrproc_t) xdr_coordinates;
 		_xdr_result = (xdrproc_t) xdr_readairports_ret;
-		local = (char *(*)(char *, struct svc_req *)) get_aiports_1_svc;
+		local = (char *(*)(char *, struct svc_req *)) get_airports_1_svc;
 		break;
 
 	default:
@@ -62,18 +64,19 @@ airportsprog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 //===========================ADDED CODE=============================
 
 static const char filename[] = "airport-locations.txt";
+struct kdtree *kd;
 
-// struct to store place (line in text file)
+/*// struct to store place (line in text file)
 struct airport {
-  char code[MAXLEN];
-  char name[MAXLEN];
+  char code[255];
+  char name[255];
   char state[2];
   float latitude;
   float longitude;
 };
 
 typedef struct airport Airport;
-
+*/
 
 char *trim(char *s)
 {
@@ -83,12 +86,12 @@ char *trim(char *s)
 }
 
 
-// This function parses the line that is reas and stores data in the "place" struct
+// This function parses the line that is reas and stores data in the "airportnode" struct
 Airport *  parseLine(char * line){
 
   Airport *a = malloc(sizeof *a);
   int length = strlen(line);
-  char temp[MAXLEN];
+  char temp[255];
   
   //code
   strncpy(a->code, line+1, 3);  // code
@@ -100,19 +103,18 @@ Airport *  parseLine(char * line){
   //latitiude
   strncpy(temp, line+6, 5);
   a->latitude = atof(temp);
-  
+
   //longitude
   strncpy(temp, line+12, 7);
   a->longitude = atof(temp);
-  
-  
+
   // Uncomment code below if you want to see the data being printed out
 
   /*
-  printf(a->code);
-  printf(a->name);
-  printf("%.6f",a->latitude);
-  printf("%.6f\n",a->longitude);
+    printf("%s\n",a->code);
+    printf("%s\n",a->name);
+	printf("%.6f",a->latitude);
+	printf("%.6f\n",a->longitude);
   */
   return a;
 
@@ -121,21 +123,55 @@ Airport *  parseLine(char * line){
 // Function to read file airport-locations.txt
 void readFile() {
   FILE *file = fopen(filename, "r");
-  char line[MAXLEN]; //temp storage for line
+  char line[255]; //temp storage for line
   if (file != NULL) {
 	fgets(line, sizeof line, file); // disregard first line
+	kd_create(2);
 	while (fgets(line, sizeof line, file) != NULL) { //read line
 	  // parse line and get data in struct
 	  if (strchr(line, ',')){
 		Airport *a = parseLine(line);
+		float coords[] = {a->latitude, a->longitude};
+		kd_insertf(kd, coords, a);
+		
+		//printf("Added: %s, %s:, lat:%f lon:%f\n", a->code, a->name, a->latitude, a->longitude);
+		//tree = kd_create(2);
+		//assert(0==kd_insert3(tree, a->latitude, a->longitude, 0.0, a));
+
 	  }
-	  // TODO: Use Airport struct store in datastructure
+	  // TODO: Use Airport struct store in KDTREE
 
 	}
 	fclose(file);
   }
-}
 
+  /* struct place {
+	float latitude;
+	float longitude;
+	float blank;
+  };
+
+  struct kdres *result;
+  
+  Airport *a = malloc(sizeof *a);
+  a->latitude = 47.626353;
+  a->longitude = -122.333144;
+  
+  double radius = 0.1;
+  result = kd_nearest_range(tree, a,radius);
+
+  Airport *b = malloc(sizeof *b);
+  double position[3];
+  b = (Airport *)kd_res_item(result,position);
+  
+
+  printf("%s\n",b->code);
+  printf("%s\n",b->name);
+  printf("%.6f",b->latitude);
+  printf("%.6f\n",b->longitude);
+  */
+  
+}
 
 
 int
@@ -164,8 +200,9 @@ main (int argc, char **argv)
 		fprintf (stderr, "%s", "unable to register (AIRPORTSPROG, AIRPORTS_VERS, tcp).");
 		exit(1);
 	}
-
+	kd = kd_create(2);
 	readFile();
+	printf("Created KDTree\n");
 	svc_run ();
 	fprintf (stderr, "%s", "svc_run returned");
 	exit (1);

@@ -10,12 +10,12 @@
 static struct timeval TIMEOUT = { 25, 0 };
 
 readairports_ret *
-get_aiports_1(struct coordinates *argp, CLIENT *clnt)
+get_airports_1(struct coordinates *argp, CLIENT *clnt)
 {
 	static readairports_ret clnt_res;
 
 	memset((char *)&clnt_res, 0, sizeof(clnt_res));
-	if (clnt_call (clnt, get_aiports,
+	if (clnt_call (clnt, get_airports,
 		(xdrproc_t) xdr_coordinates, (caddr_t) argp,
 		(xdrproc_t) xdr_readairports_ret, (caddr_t) &clnt_res,
 		TIMEOUT) != RPC_SUCCESS) {

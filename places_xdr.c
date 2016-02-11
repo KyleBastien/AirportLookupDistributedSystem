@@ -6,27 +6,6 @@
 #include "places.h"
 
 bool_t
-xdr_placestype (XDR *xdrs, placestype *objp)
-{
-	register int32_t *buf;
-
-	 if (!xdr_string (xdrs, objp, MAXLEN))
-		 return FALSE;
-	return TRUE;
-}
-
-bool_t
-xdr_placesnum (XDR *xdrs, placesnum *objp)
-{
-	register int32_t *buf;
-
-	 if (!xdr_array (xdrs, (char **)&objp->placesnum_val, (u_int *) &objp->placesnum_len, MAXLEN,
-		sizeof (float), (xdrproc_t) xdr_float))
-		 return FALSE;
-	return TRUE;
-}
-
-bool_t
 xdr_placeslist (XDR *xdrs, placeslist *objp)
 {
 	register int32_t *buf;
@@ -41,13 +20,13 @@ xdr_placesnode (XDR *xdrs, placesnode *objp)
 {
 	register int32_t *buf;
 
-	 if (!xdr_placestype (xdrs, &objp->code))
+	 if (!xdr_string (xdrs, &objp->code, ~0))
 		 return FALSE;
-	 if (!xdr_placestype (xdrs, &objp->name))
+	 if (!xdr_string (xdrs, &objp->name, ~0))
 		 return FALSE;
-	 if (!xdr_placestype (xdrs, &objp->state))
+	 if (!xdr_string (xdrs, &objp->state, 2))
 		 return FALSE;
-	 if (!xdr_placesnum (xdrs, &objp->distance))
+	 if (!xdr_float (xdrs, &objp->distance))
 		 return FALSE;
 	 if (!xdr_placeslist (xdrs, &objp->next))
 		 return FALSE;
@@ -59,11 +38,11 @@ xdr_location (XDR *xdrs, location *objp)
 {
 	register int32_t *buf;
 
-	 if (!xdr_placestype (xdrs, &objp->city))
+	 if (!xdr_string (xdrs, &objp->city, ~0))
 		 return FALSE;
-	 if (!xdr_placestype (xdrs, &objp->state))
+	 if (!xdr_string (xdrs, &objp->state, 2))
 		 return FALSE;
-	 if (!xdr_placestype (xdrs, &objp->host))
+	 if (!xdr_string (xdrs, &objp->host, ~0))
 		 return FALSE;
 	return TRUE;
 }

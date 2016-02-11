@@ -4,76 +4,35 @@
  * as a guideline for developing your own functions.
  */
 
-
-#include "places_airports.h"
 #include <math.h>
+#include "airports.h"
+#include "kdtree.h"
+
 #define pi 3.14159265358979323846
 
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//:: This function converts decimal degrees to radians:
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-//TODO: Implement nearest neighbor search
-readairports_ret *
-get_aiports_1_svc(struct coordinates *argp, struct svc_req *rqstp)
-{
-	static readairports_ret  result;
-
-	/*
-	 * insert server code here
-	 */
-
-	return &result;
-}
-
-/*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
-/*:: This function converts decimal degrees to radians :*/
-/*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
 double deg2rad(double deg) {
   return (deg * pi / 180);
 }
-/*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
-/*:: This function converts radians to decimal degrees :*/
-/*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//:: This function converts radians to decimal degrees:
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 double rad2deg(double rad) {
   return (rad * 180 / pi);
 }
 
-/*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
-/*:: :*/
-/*:: This routine calculates the distance between two points (given the :*/
-/*:: latitude/longitude of those points). It is being used to calculate :*/
-/*:: the distance between two ZIP Codes or Postal Codes using our :*/
-/*:: ZIPCodeWorld(TM) and PostalCodeWorld(TM) products. :*/
-/*:: :*/
-/*:: Definitions: :*/
-/*:: South latitudes are negative, east longitudes are positive :*/
-/*:: :*/
-/*:: Passed to function: :*/
-/*:: lat1, lon1 = Latitude and Longitude of point 1 (in decimal degrees) :*/
-/*:: lat2, lon2 = Latitude and Longitude of point 2 (in decimal degrees) :*/
-/*:: unit = the unit you desire for results :*/
-/*:: where: 'M' is statute miles :*/
-/*:: 'K' is kilometers (default) :*/
-/*:: 'N' is nautical miles :*/
-/*:: United States ZIP Code/ Canadian Postal Code databases with latitude & :*/
-/*:: longitude are available at http://www.zipcodeworld.com :*/
-/*:: :*/
-/*:: For enquiries, please contact sales@zipcodeworld.com :*/
-/*:: :*/
-/*:: Official Web site: http://www.zipcodeworld.com :*/
-/*:: :*/
-/*:: Hexa Software Development Center © All Rights Reserved 2004 :*/
-/*:: :*/
-/*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
-
 double distance(double lat1, double lon1, double lat2, double lon2, char unit) {
   double theta, dist;
   theta = lon1 - lon2;
-  dist = sin(deg2rad(lat1)) * sin(deg2rad(lat2)) + cos(deg2rad(lat1)) * cos(deg2rad(lat2)) * cos(deg2rad(theta));
+  dist = sin(deg2rad(lat1))* sin(deg2rad(lat2)) + cos(deg2rad(lat1)) * cos(deg2rad(lat2)) * cos(deg2rad(theta));
   dist = acos(dist);
   dist = rad2deg(dist);
   dist = dist * 60 * 1.1515;
-  switch(unit) {
-  case 'M':
-	break;
+  switch (unit) {
+  case 'M': break;
   case 'K':
 	dist = dist * 1.609344;
 	break;
@@ -84,3 +43,69 @@ double distance(double lat1, double lon1, double lat2, double lon2, char unit) {
   return (dist);
 }
 
+
+airportslist sortAndAddAirports(int countRequired, float searchOrigin[]) {
+  //____first populate an array with results
+  int countFound = 0;
+  float range = .5;
+  struct kdres *rangeSearchResult = kd_nearest_rangef(kd, searchOrigin, range);
+  while (kd_res_size(rangeSearchResult) < countRequired) {
+	range += .5;
+	rangeSearchResult = kd_nearest_rangef(kd, searchOrigin, range);
+  }
+
+  int rangeSize = kd_res_size(rangeSearchResult);
+  Airport airports[rangeSize];
+  double position[2];
+  int i;
+  for (i = 0; i < rangeSize; i++) {
+	/* get the data and position of the current result item */
+	Airport * airport = (Airport*) kd_res_item(rangeSearchResult, position);
+
+	/* compute the distance to the current result */
+	//set the calculated distance to the airport struct
+	double dist = distance(position[0], position[1], searchOrigin[0], searchOrigin[1], 'M');
+	airport->dist = dist;
+
+	airports[i] = *airport;
+
+	/* go to the next entry */
+	kd_res_next(rangeSearchResult);
+  }
+  //___insertion sort of array
+  for (i = 1; i < rangeSize; i++) {
+	int iDoSwap = 1;
+	int j;
+	for (j = i; j > 0 && iDoSwap; j--)
+	  {
+		if( airports[j].dist > airports[j-1].dist ) iDoSwap = 0;
+		if (iDoSwap) {
+		  Airport temp;
+		  temp = airports[j];
+		  airports[j] = airports[j - 1];
+		  airports[j - 1] = temp;
+		}
+	  }
+  }
+
+  airportslist result = malloc(sizeof(airportslist));
+
+  for (i=0; i<countRequired; i++)
+	{
+	  // need to fill result from sorted array here
+	}
+  return result;
+}
+
+
+
+readairports_ret *
+get_airports_1_svc(struct coordinates *argp, struct svc_req *rqstp)
+{
+  static readairports_ret  result;
+
+  
+	
+
+  return &result;
+}

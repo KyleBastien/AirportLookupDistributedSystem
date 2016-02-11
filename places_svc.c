@@ -4,8 +4,8 @@
  */
 
 #include "places.h"
-#include "airports.h"
 #include "trie.h"
+#include "airports.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <rpc/pmap_clnt.h>
@@ -13,6 +13,7 @@
 #include <memory.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <string.h>
 
 #ifndef SIG_PF
 #define SIG_PF void(*)(int)
@@ -38,8 +39,7 @@ placesprog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 		_xdr_result = (xdrproc_t) xdr_readplaces_ret;
 		local = (char *(*)(char *, struct svc_req *)) get_places_1_svc;
 		break;
-		
-	  	
+
 	default:
 		svcerr_noproc (transp);
 		return;
@@ -60,13 +60,12 @@ placesprog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 	return;
 }
 
-
 static const char filename[] = "places2k.txt";
 trieNode_t *root;
 
 // struct to store place (line in text file)
 struct place {
-  char name[MAXLEN];
+  char name[255];
   char state[2];
   float latitude;
   float longitude;
@@ -76,26 +75,44 @@ typedef struct place Place;
 
 
 // Trim spaces
-char *trim(char *s)
-{
+/*char *trim(char *s)
+  {
   while(isspace(*s)) s++;
   s[strlen(s) - 1] = '\0';
   return s;
-}
+  }*/
+char *trim(char *str)
+{
+  char *end;
 
+  // Trim leading space
+  while(isspace(*str)) str++;
+
+  if(*str == 0)  // All spaces?
+	return str;
+
+  // Trim trailing space
+  end = str + strlen(str) - 1;
+  while(end > str && isspace(*end)) end--;
+
+  // Write new null terminator
+  *(end+1) = 0;
+
+  return str;
+}
 
 // This function parses the line that is reas and stores data in the "place" struct
 Place *  parseLine(char * line){
 
   Place *p = malloc(sizeof *p);
-  char * temp;
-  
+  char * temp = malloc(sizeof *temp);
+
   strncpy(p->name, line+9, 64); // name
   strncpy(p->name, trim(p->name), strlen(p->name)); // trimming spaces
-		  
+
   strncpy(p->state, line, 2);   // state
 
-  strncpy(temp, line+143, 10);  
+  strncpy(temp, line+143, 10);
   p->latitude = atof(temp);     // latitude
 
   strncpy(temp, line+153, 11);  // longitude
@@ -103,52 +120,67 @@ Place *  parseLine(char * line){
 
   // Uncomment code below if you want to see the data being printed out
   /*
-  printf(p->name);
-  printf(p->state);
-  printf("%.6f",p->latitude);
-  printf("%.6f\n",p->longitude);
+	printf(p->name);
+	printf(p->state);
+	printf("%.6f",p->latitude);
+	printf("%.6f\n",p->longitude);
   */
   return p;
-  
 };
 
 // Function to read file places2k.txt
 void readFile() {
   FILE *file = fopen(filename, "r");
-  char line[MAXLEN]; //temp storage for line
+  char line[255]; //temp storage for line
   //Place * p = (Place*)malloc(sizeof(Place));
-  if (file != NULL) {	
+  if (file != NULL) {
 	while (fgets(line, sizeof line, file) != NULL) { //read line
 	  // parse line and get data in struct
 	  Place *p = parseLine(line);
+	  // TODO: Use Place struct store in datastructure
 	  char place_name[66];
 	  int i = 0;
 
 	  // concatenate state and city names and convert to lowercase to form a single unique entry to add to trie
-	  // "state|city" eg. "Seattle, WA" becomes "waseattle"
-	  strcat(place_name, p->state);
-	  strcat(place_name, p->name);
-	  for (i = 0; place_name[i]; i++)
-	  {
-	  	place_name[i] = tolower(place_name[i]);
-	  }
+		// "state|city" eg. "Seattle, WA" becomes "waseattle"
+	  //printf("State: %s", p->state);
+	  //printf("Name: %s", p->name);
 
+	  char merge[255];
+	  strcpy(merge, p->state);
+	  strcat(merge, p->name);
+	  unsigned int lastSpace = 0;
+	  //strcat(place_name, p->name);
+	  //printf("Place_Name: %s", place_name);
+	  for (i = 0; merge[i]; i++)
+		{
+		  merge[i] = tolower(merge[i]);
+		  if (merge[i] == ' ') {
+			lastSpace = i;
+		  }
+		}
+	  
+	  //printf("%s\n", merge);
+	  
 	  // add new entry to trie
-	  TrieAdd(&root, place_name, p->latitude, p->longitude);
-
+	  TrieAdd(&root, merge, p->latitude, p->longitude);
+	  //printf("Added: %s\n", merge);
+	  //break;
 	  // discard p, its data has been added to trie so it's no longer needed
 	  free(p);
 	}
+	printf("Created Trie\n");
 	fclose(file);
   }
+  
 }
+
 
 int
 main (int argc, char **argv)
 {
-  
 	register SVCXPRT *transp;
-	
+
 	pmap_unset (PLACESPROG, PLACES_VERS);
 
 	transp = svcudp_create(RPC_ANYSOCK);
@@ -172,14 +204,9 @@ main (int argc, char **argv)
 	}
 
 	TrieCreate(&root);
-
-	readFile(); // reads the file and parses each line
-
-	svc_run();
+	readFile();
+	svc_run ();
 	fprintf (stderr, "%s", "svc_run returned");
-	
-	TrieDestroy(root);
-
 	exit (1);
 	/* NOTREACHED */
 }
