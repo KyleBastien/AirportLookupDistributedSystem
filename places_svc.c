@@ -5,7 +5,6 @@
 
 #include "placesairports.h"
 #include "trie.h"
-//#include "airports.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <rpc/pmap_clnt.h>
@@ -74,13 +73,6 @@ struct place {
 typedef struct place Place;
 
 
-// Trim spaces
-/*char *trim(char *s)
-  {
-  while(isspace(*s)) s++;
-  s[strlen(s) - 1] = '\0';
-  return s;
-  }*/
 char *trim(char *str)
 {
   char *end;
@@ -125,26 +117,19 @@ Place *  parseLine(char * line){
 void readFile() {
   FILE *file = fopen(filename, "r");
   char line[255]; //temp storage for line
-  //Place * p = (Place*)malloc(sizeof(Place));
+
   if (file != NULL) {
 	while (fgets(line, sizeof line, file) != NULL) { //read line
 	  // parse line and get data in struct
 	  Place *p = parseLine(line);
-	  // TODO: Use Place struct store in datastructure
-	  char place_name[66];
 	  int i = 0;
 
 	  // concatenate state and city names and convert to lowercase to form a single unique entry to add to trie
-		// "state|city" eg. "Seattle, WA" becomes "waseattle"
-	  //printf("State: %s", p->state);
-	  //printf("Name: %s", p->name);
-
+	  // "state|city" eg. "Seattle, WA" becomes "waseattle"
 	  char merge[255];
 	  strcpy(merge, p->state);
 	  strcat(merge, p->name);
 	  unsigned int lastSpace = 0;
-	  //strcat(place_name, p->name);
-	  //printf("Place_Name: %s", place_name);
 	  for (i = 0; merge[i]; i++)
 		{
 		  merge[i] = tolower(merge[i]);
@@ -152,17 +137,14 @@ void readFile() {
 			lastSpace = i;
 		  }
 		}
-	  
-	  //printf("%s\n", merge);
-	  
+	  	  
 	  // add new entry to trie
 	  TrieAdd(&root, merge, p->latitude, p->longitude);
-	  //printf("Added: %s\n", merge);
-	  //break;
+
 	  // discard p, its data has been added to trie so it's no longer needed
 	  free(p);
 	}
-	//printf("Created Trie\n");
+	// Close file before exit
 	fclose(file);
   }
   
@@ -202,3 +184,4 @@ main (int argc, char **argv)
 	exit (1);
 	/* NOTREACHED */
 }
+

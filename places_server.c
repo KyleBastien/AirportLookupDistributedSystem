@@ -29,8 +29,6 @@ airportslist airportsprog_1(coordinates * coord, char *host)
   
   list = result_1->readairports_ret_u.list;
     
-  //xdr_free((xdrproc_t)xdr_readairports_ret, (char *)result_1);
-
   return list;
   
 #ifndef DEBUG
@@ -44,32 +42,20 @@ get_places_1_svc(struct location *argp, struct svc_req *rqstp)
 {
 	static readplaces_ret  result;
 	trieNode_t *search_result;
-	char place_name[66];
-	
-	int i = 0;
-	
-	//strcat(place_name, argp->state);
-	//strcat(place_name, argp->city);
-
-	//xdr_free((xdrproc_t)xdr_readplaces_ret, (char *)&result.readplaces_ret_u.list);
-	
-	//list = &result.readplaces_ret_u.list;
-
 	char merge[255];
+	int i = 0;
+		
+	// Merge state and city name into a single string (state|city) then convert whole string to lower case
 	strcpy(merge, argp->state);
 	strcat(merge, argp->city);
-
-	//strcat(place_name, p->name);
-	//printf("Place_Name: %s", place_name);
 	for (i = 0; merge[i]; i++)
 	  {
 		merge[i] = tolower(merge[i]);
 	  }
 
-	
-	//printf("Merged: %s\n", merge);
-	
+	// Search Trie for place match, allow patial matches
 	search_result = TrieSearchPartial(root->children,merge);
+
 	xdr_free((xdrproc_t)xdr_readplaces_ret, (char *)&result);	
 
 
@@ -87,6 +73,7 @@ get_places_1_svc(struct location *argp, struct svc_req *rqstp)
 	  // get nearest airports
 	  al = airportsprog_1(coord, argp->host);
 	  
+	  // Build list of nearest airport information
 	  while (al != NULL) {
 		temp = (placesnode *)malloc(sizeof(placesnode));
 		temp->code = al->code;
@@ -109,5 +96,6 @@ get_places_1_svc(struct location *argp, struct svc_req *rqstp)
 	
 	return &result;
 }
+
 
 
