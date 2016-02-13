@@ -22,6 +22,8 @@ extern "C" {
 	char *code;
 	char *name;
 	char *state;
+	float latitude;
+	float longitude;
 	float distance;
 	placeslist next;
   };

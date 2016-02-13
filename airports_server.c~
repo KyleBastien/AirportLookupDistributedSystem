@@ -91,14 +91,7 @@ airportslist sortAndAddAirports(int countRequired, float searchOrigin[]) {
   // inserting into list
   airportslist head = NULL;
   airportsnode *temp;
-  /*
-  for (i = 0; i<countRequired; i++) {
-	printf("%s\n", airports[i].code);
-	printf("%s\n", airports[i].name);
-	printf("%s", airports[i].state);
-	printf("%f\n", airports[i].dist);
-	}*/
-  
+    
   for (i=0; i<countRequired; i++)
 	{
 	  temp = (airportsnode *)malloc(sizeof(airportsnode));
@@ -124,22 +117,15 @@ get_airports_1_svc(struct coordinates *argp, struct svc_req *rqstp)
 {
   static readairports_ret  result;
 
-  float coords[2] = {argp->lattitude, argp->longitude};
+  xdr_free((xdrproc_t)xdr_readairports_ret, (char *)&result);
+
   airportslist list;
   airportslist * head;
-  
-  list = sortAndAddAirports(5, coords);
-  xdr_free((xdrproc_t)xdr_readairports_ret, (char *)&result);
   airportslist temp = list;
+  float coords[2] = {argp->lattitude, argp->longitude};
 
-  while (temp != NULL) {
-	printf("Connection established!\n");
-	printf("%s\n", temp->name);
-	printf("%s\n", temp->code);
-	printf("%f\n\n", temp->distance);
-	temp = temp->next;
-  }
-    
+  list = sortAndAddAirports(5, coords);
+  
   head = &result.readairports_ret_u.list;
   *head = list;   
   

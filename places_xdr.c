@@ -25,7 +25,11 @@ xdr_placesnode (XDR *xdrs, placesnode *objp)
 	 if (!xdr_string (xdrs, &objp->name, ~0))
 		 return FALSE;
 	 if (!xdr_string (xdrs, &objp->state, 2))
-		 return FALSE;
+	   return FALSE;
+	 if (!xdr_float (xdrs, &objp->latitude))
+	   return FALSE;
+	 if (!xdr_float (xdrs, &objp->longitude))
+	   return FALSE;
 	 if (!xdr_float (xdrs, &objp->distance))
 		 return FALSE;
 	 if (!xdr_placeslist (xdrs, &objp->next))

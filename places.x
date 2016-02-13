@@ -7,6 +7,8 @@ struct placesnode{
        string code<>;
        string name<>;
        string state<2>;
+       float latitude;
+       float longitude;
        float distance;
        placeslist next;
 };

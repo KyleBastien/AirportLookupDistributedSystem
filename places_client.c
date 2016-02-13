@@ -29,6 +29,9 @@ placesprog_1(char *host, struct location * input)
 	
 	list = result_1->readplaces_ret_u.list;
 
+	//printf("%s, %s: %f, %f", list->name, list->state, list->latitude, list->longitude);
+	//list = list->next;
+	
 	while (list != NULL) {
 	  printf("code=%s, name=%s, state=%s, distance:%f\n", list->code, list->name, list->state, list->distance);
 	  //printf("%f\n", list->distance);
