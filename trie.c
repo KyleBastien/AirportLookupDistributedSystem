@@ -206,9 +206,72 @@ trieNode_t* TrieSearch(trieNode_t *root, const char *key)
 
 /*
  * Searches trie of argument:'root' for the string provided with argument:'key'
- * Returns the terminating trie node if 'key' is a partial, but unique, match for a trie entry; returns NULL otherwise
+ * Returns the terminating trie node if 'key' is a partial match for a trie entry; returns NULL otherwise
+ * In the case of multiple partial matches, this function will simply return which ever was added to the trie first
  */
 trieNode_t* TrieSearchPartial(trieNode_t *root, const char *key)
+{
+  trieNode_t *level = root;
+  trieNode_t *pPtr = NULL;
+  int lvl=0;
+
+  while(1)
+	{
+	  trieNode_t *found = NULL;
+	  trieNode_t *curr;
+
+	  for (curr = level; curr != NULL; curr = curr->next)
+		{
+
+#ifdef DEBUG
+		  printf("Comparing: [%c] with [%c]\n",curr->key, *key);
+#endif
+
+		  if (curr->key == *key)
+			{
+
+#ifdef DEBUG
+			  printf("Found!\n");
+#endif
+
+			  found = curr;
+			  lvl++;
+			  break;
+			}
+		  /* else if will continue to travel down the trie in the case that a partial match with a trie entry is found */
+		  else if (*key == '\0')
+			{
+
+#ifdef DEBUG
+			  printf("Moving along\n");
+#endif
+
+			  found = curr;
+			  lvl++;
+			  key--;
+			  break;
+			}
+		}
+
+	  if (found == NULL)
+		return NULL;
+
+	  if (*key == '\0')
+		{
+		  pPtr = curr;
+		  return pPtr;
+		}
+
+	  level = found->children;
+	  key++;
+	}
+}
+
+/*
+ * Searches trie of argument:'root' for the string provided with argument:'key'
+ * Returns the terminating trie node if 'key' is a partial, but unique, match for a trie entry; returns NULL otherwise
+ */
+trieNode_t* TrieSearchPartialUnique(trieNode_t *root, const char *key)
 {
   trieNode_t *level = root;
   trieNode_t *pPtr = NULL;
@@ -273,6 +336,7 @@ trieNode_t* TrieSearchPartial(trieNode_t *root, const char *key)
 	  key++;
 	}
 }
+
 
 /*
  * Removes string provided with argument:key from trie of argument:'root'
@@ -408,4 +472,5 @@ void TrieDestroy( trieNode_t* root )
 		}
 	}
 }
+
 
