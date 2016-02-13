@@ -3,7 +3,7 @@
  * It was generated using rpcgen.
  */
 
-#include "airports.h"
+#include "placesairports.h"
 #include "kdtree.h"
 #include <assert.h>
 #include <ctype.h>
@@ -202,7 +202,7 @@ main (int argc, char **argv)
 	}
 	kd = kd_create(2);
 	readFile();
-	printf("Created KDTree\n");
+	//printf("Created KDTree\n");
 	svc_run ();
 	fprintf (stderr, "%s", "svc_run returned");
 	exit (1);

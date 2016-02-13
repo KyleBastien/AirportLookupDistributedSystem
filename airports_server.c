@@ -5,7 +5,7 @@
  */
 
 #include <math.h>
-#include "airports.h"
+#include "placesairports.h"
 #include "kdtree.h"
 
 #define pi 3.14159265358979323846
@@ -87,25 +87,61 @@ airportslist sortAndAddAirports(int countRequired, float searchOrigin[]) {
 		}
 	  }
   }
-
-  airportslist result = malloc(sizeof(airportslist));
-
+  
+  // inserting into list
+  airportslist head = NULL;
+  airportsnode *temp;
+  /*
+  for (i = 0; i<countRequired; i++) {
+	printf("%s\n", airports[i].code);
+	printf("%s\n", airports[i].name);
+	printf("%s", airports[i].state);
+	printf("%f\n", airports[i].dist);
+	}*/
+  
   for (i=0; i<countRequired; i++)
 	{
-	  // need to fill result from sorted array here
+	  temp = (airportsnode *)malloc(sizeof(airportsnode));
+	  temp->code = airports[i].code;
+	  temp->name = airports[i].name;
+	  temp->state = airports[i].state;
+	  temp->distance = airports[i].dist;
+	  if (head == NULL) {
+		head = temp;
+		head->next = NULL;
+	  } else {
+		temp->next = head;
+		head = temp;
+	  }	
 	}
-  return result;
+  
+	return head;
+  
 }
-
-
 
 readairports_ret *
 get_airports_1_svc(struct coordinates *argp, struct svc_req *rqstp)
 {
   static readairports_ret  result;
 
+  float coords[2] = {argp->lattitude, argp->longitude};
+  airportslist list;
+  airportslist * head;
   
-	
+  list = sortAndAddAirports(5, coords);
+  xdr_free((xdrproc_t)xdr_readairports_ret, (char *)&result);
+  airportslist temp = list;
 
+  /* while (temp != NULL) {
+	printf("Connection established!\n");
+	printf("%s\n", temp->name);
+	printf("%s\n", temp->code);
+	printf("%f\n\n", temp->distance);
+	temp = temp->next;
+	}*/
+    
+  head = &result.readairports_ret_u.list;
+  *head = list;   
+  
   return &result;
 }

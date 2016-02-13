@@ -3,7 +3,7 @@
  * It was generated using rpcgen.
  */
 
-#include "airports.h"
+#include "placesairports.h"
 
 bool_t
 xdr_airportslist (XDR *xdrs, airportslist *objp)
@@ -26,8 +26,7 @@ xdr_airportsnode (XDR *xdrs, airportsnode *objp)
 		 return FALSE;
 	 if (!xdr_string (xdrs, &objp->state, ~0))
 		 return FALSE;
-	 if (!xdr_array (xdrs, (char **)&objp->distance.distance_val, (u_int *) &objp->distance.distance_len, ~0,
-		sizeof (float), (xdrproc_t) xdr_float))
+	 if (!xdr_float (xdrs, &objp->distance))
 		 return FALSE;
 	 if (!xdr_airportslist (xdrs, &objp->next))
 		 return FALSE;

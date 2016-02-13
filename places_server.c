@@ -4,20 +4,51 @@
  * as a guideline for developing your own functions.
  */
 
-#include "places.h"
+#include "placesairports.h"
 #include "trie.h"
-#include "airports.h"
+//#include "airports.h"
+
+airportslist airportsprog_1(coordinates * coord, char *host)
+{
+  CLIENT *clnt;
+  readairports_ret  *result_1;
+  struct coordinates  get_airports_1_arg;
+  airportslist list;
+  
+#ifndef DEBUG
+  clnt = clnt_create (host, AIRPORTSPROG, AIRPORTS_VERS, "udp");
+  if (clnt == NULL) {
+	clnt_pcreateerror (host);
+	exit (1);
+  }
+#endif  /* DEBUG */
+
+  result_1 = get_airports_1(coord, clnt);
+  if (result_1 == (readairports_ret *) NULL) {
+	clnt_perror (clnt, "call failed");
+  }
+  
+  list = result_1->readairports_ret_u.list;
+    
+  //xdr_free((xdrproc_t)xdr_readplaces_ret, (char *)result_1);
+
+  return list;
+  
+#ifndef DEBUG
+  clnt_destroy (clnt);
+#endif   /* DEBUG */
+}
+
 
 readplaces_ret *
 get_places_1_svc(struct location *argp, struct svc_req *rqstp)
 {
 	static readplaces_ret  result;
-	
-	
+   
 	trieNode_t *search_result;
-	placeslist * list;	
+	//placeslist * list;	
 	char place_name[66];
-	placeslist temp;
+	//placeslist temp;
 	int i = 0;
 	
 	//strcat(place_name, argp->state);
@@ -42,13 +73,47 @@ get_places_1_svc(struct location *argp, struct svc_req *rqstp)
 	//printf("Merged: %s\n", merge);
 	
 	search_result = TrieSearchPartial(root->children,merge);
+	xdr_free((xdrproc_t)xdr_readplaces_ret, (char *)&result);	
+
+
+	airportslist al;
+    placeslist head = NULL;
+	placesnode * temp;	
+	placeslist * list;
 
 	// found places now make a call to airport_server
 	if (search_result) {
-	  //airportsprog_1(argp->host);	
+	  coordinates *coord = malloc(sizeof *coord);
+	  coord->lattitude = search_result->latitude;
+	  coord->longitude = search_result->longitude;
+	  //printf("Found %s, lat:%f lon:%f\n", merge, search_result->latitude, search_result->longitude);
+	  al = airportsprog_1(coord, argp->host);
+	  
+	  while (al != NULL) {
+		  temp = (placesnode *)malloc(sizeof(placesnode));
+		  temp->code = al->code;
+		  temp->name = al->name;
+		  temp->state = al->state;
+		  temp->distance = al->distance;
+		  if (head == NULL) {
+			head = temp;
+			head->next = NULL;
+		  } else {
+			temp->next = head;
+			head = temp;
+		  }
+		  al = al->next;
+		}
+	  
+	  	  
+	  list = &result.readplaces_ret_u.list;
+	  *list = head;
 	}
-	// printf("Found %s, lat:%f lon:%f\n", merge, search_result->latitude, search_result->longitude);		
 
+	
+	
+	// printf("Found %s, lat:%f lon:%f\n", merge, search_result->latitude, search_result->longitude);		
+	
 	return &result;
 }
 

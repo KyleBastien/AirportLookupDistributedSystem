@@ -3,7 +3,7 @@
  * It was generated using rpcgen.
  */
 
-#include "airports.h"
+#include "placesairports.h"
 #include "kdtree.h"
 #include <assert.h>
 #include <ctype.h>
@@ -66,7 +66,7 @@ airportsprog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 static const char filename[] = "airport-locations.txt";
 struct kdtree *kd;
 
-// struct to store place (line in text file)
+/*// struct to store place (line in text file)
 struct airport {
   char code[255];
   char name[255];
@@ -76,7 +76,7 @@ struct airport {
 };
 
 typedef struct airport Airport;
-
+*/
 
 char *trim(char *s)
 {
@@ -87,9 +87,9 @@ char *trim(char *s)
 
 
 // This function parses the line that is reas and stores data in the "airportnode" struct
-airportnode *  parseLine(char * line){
+Airport *  parseLine(char * line){
 
-  airport *a = malloc(sizeof *a);
+  Airport *a = malloc(sizeof *a);
   int length = strlen(line);
   char temp[255];
   

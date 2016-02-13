@@ -3,8 +3,9 @@
  * It was generated using rpcgen.
  */
 
-#include "places.h"
+#include "placesairports.h"
 #include "trie.h"
+//#include "airports.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <rpc/pmap_clnt.h>
@@ -174,10 +175,9 @@ void readFile() {
   
 }
 
-
 int
 main (int argc, char **argv)
-{
+{ 
 	register SVCXPRT *transp;
 
 	pmap_unset (PLACESPROG, PLACES_VERS);
@@ -201,7 +201,7 @@ main (int argc, char **argv)
 		fprintf (stderr, "%s", "unable to register (PLACESPROG, PLACES_VERS, tcp).");
 		exit(1);
 	}
-
+	
 	TrieCreate(&root);
 	readFile();
 	svc_run ();

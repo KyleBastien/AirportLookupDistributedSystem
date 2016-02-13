@@ -12,7 +12,7 @@ SOURCES_SVC.c =
 SOURCES_SVC.h = 
 SOURCES.x = airports.x
 
-TARGETS_SVC.c = airports_svc.c airports_server.c airports_xdr.c kdtree.c
+TARGETS_SVC.c = airports_svc.c airports_server.c airports_xdr.c 
 TARGETS_CLNT.c = airports_clnt.c airports_client.c airports_xdr.c 
 TARGETS = airports.h airports_xdr.c airports_clnt.c airports_svc.c airports_client.c airports_server.c
 
@@ -21,7 +21,7 @@ OBJECTS_SVC = $(SOURCES_SVC.c:%.c=%.o) $(TARGETS_SVC.c:%.c=%.o)
 # Compiler flags 
 
 CFLAGS += -g 
-LDLIBS += -lnsl -lm
+LDLIBS += -lnsl
 RPCGENFLAGS = 
 
 # Targets 

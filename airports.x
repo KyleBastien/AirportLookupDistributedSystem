@@ -7,7 +7,7 @@ struct airportsnode{
        string code<>;
        string name<>;
        string state<>;
-       float distance<>;
+       float distance;
        airportslist next;
 };
 

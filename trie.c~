@@ -87,7 +87,7 @@ void TrieAdd(trieNode_t **root, char *key, float lat, float lon)
 
   if(TrieSearch(pTrav, key))
 	{
-	  //printf("Duplicate!\n");
+	  printf("Duplicate!\n");
 	  return;
 	}
 

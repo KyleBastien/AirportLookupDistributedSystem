@@ -8,40 +8,23 @@
 
 #include <rpc/rpc.h>
 
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 
 typedef struct airportsnode *airportslist;
-struct kdtree *kd;
-  
+
 struct airportsnode {
 	char *code;
 	char *name;
 	char *state;
-	struct {
-		u_int distance_len;
-		float *distance_val;
-	} distance;
+	float distance;
 	airportslist next;
 };
 typedef struct airportsnode airportsnode;
 
-// struct to store place (line in text file)
-struct airport {
-  char code[255];
-  char name[255];
-  char state[2];
-  float latitude;
-  float longitude;
-  float dist;
-};
-
-typedef struct airport Airport;
-  
-
-  
 struct coordinates {
 	float lattitude;
 	float longitude;

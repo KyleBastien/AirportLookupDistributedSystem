@@ -3,9 +3,9 @@
  * It was generated using rpcgen.
  */
 
-#include "places.h"
+#include "placesairports.h"
 #include "trie.h"
-#include "airports.h"
+//#include "airports.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <rpc/pmap_clnt.h>
@@ -118,13 +118,6 @@ Place *  parseLine(char * line){
   strncpy(temp, line+153, 11);  // longitude
   p->longitude = atof(temp);
 
-  // Uncomment code below if you want to see the data being printed out
-  /*
-	printf(p->name);
-	printf(p->state);
-	printf("%.6f",p->latitude);
-	printf("%.6f\n",p->longitude);
-  */
   return p;
 };
 
@@ -169,16 +162,15 @@ void readFile() {
 	  // discard p, its data has been added to trie so it's no longer needed
 	  free(p);
 	}
-	printf("Created Trie\n");
+	//printf("Created Trie\n");
 	fclose(file);
   }
   
 }
 
-
 int
 main (int argc, char **argv)
-{
+{ 
 	register SVCXPRT *transp;
 
 	pmap_unset (PLACESPROG, PLACES_VERS);
@@ -202,7 +194,7 @@ main (int argc, char **argv)
 		fprintf (stderr, "%s", "unable to register (PLACESPROG, PLACES_VERS, tcp).");
 		exit(1);
 	}
-
+	
 	TrieCreate(&root);
 	readFile();
 	svc_run ();

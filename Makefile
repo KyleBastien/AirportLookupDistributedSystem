@@ -12,14 +12,14 @@ SOURCES_SVC.c =
 SOURCES_SVC.h = 
 #SOURCES.x = places.x
 
-TARGETS_SVC.c = places_svc.c places_server.c places_xdr.c trie.c
+TARGETS_SVC.c = places_svc.c places_server.c places_xdr.c trie.c airports_clnt.c airports_xdr.c
 TARGETS_SVC2.c = airports_svc.c airports_server.c airports_xdr.c kdtree.c
 
 TARGETS_CLNT.c = places_clnt.c places_client.c places_xdr.c
-TARGETS_CLNT2.c = airports_clnt.c airports_client.c airports_xdr.c
+TARGETS_CLNT2.c = places_server.c places_svc.c airports_clnt.c airports_xdr.c #airports_clnt.c airports_client.c airports_xdr.c
 
-TARGETS = places.h places_xdr.c places_clnt.c places_svc.c places_client.c places_server.c
-TARGETS2 = airports.h airports_xdr.c airports_clnt.c airports_svc.c airports_client.c airports_server.c
+TARGETS = placesairports.h places_xdr.c places_clnt.c places_svc.c places_client.c places_server.c
+TARGETS2 = placesairports.h airports_xdr.c airports_clnt.c airports_svc.c airports_server.c places_server.c places_svc.c
 
 OBJECTS_CLNT = $(SOURCES_CLNT.c:%.c=%.o) $(TARGETS_CLNT.c:%.c=%.o)
 OBJECTS_CLNT2 = $(SOURCES_CLNT2.c:%.c=%.o) $(TARGETS_CLNT2.c:%.c=%.o)

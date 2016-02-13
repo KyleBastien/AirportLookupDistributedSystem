@@ -4,7 +4,7 @@
  * as a guideline for developing your own functions.
  */
 
-#include "places.h"
+#include "placesairports.h"
 
 void
 placesprog_1(char *host, struct location * input)
@@ -30,11 +30,11 @@ placesprog_1(char *host, struct location * input)
 	list = result_1->readplaces_ret_u.list;
 
 	while (list != NULL) {
-	  printf("%s\n", list->name);
-	  printf("%f\n", list->distance);
+	  printf("code=%s, name=%s, state=%s, distance:%f\n", list->code, list->name, list->state, list->distance);
+	  //printf("%f\n", list->distance);
 	  list = list->next;
 	}
-	
+	xdr_free((xdrproc_t)xdr_readplaces_ret, (char*)result_1);	
 
 	
 #ifndef	DEBUG

@@ -12,7 +12,7 @@ SOURCES_SVC.c =
 SOURCES_SVC.h = 
 SOURCES.x = airports.x
 
-TARGETS_SVC.c = airports_svc.c airports_server.c airports_xdr.c kdtree.c
+TARGETS_SVC.c = airports_svc.c airports_server.c airports_xdr.c 
 TARGETS_CLNT.c = airports_clnt.c airports_client.c airports_xdr.c 
 TARGETS = airports.h airports_xdr.c airports_clnt.c airports_svc.c airports_client.c airports_server.c
 
@@ -28,8 +28,8 @@ RPCGENFLAGS =
 
 all : $(CLIENT) $(SERVER)
 
-#$(TARGETS) : $(SOURCES.x) 
-#	rpcgen $(RPCGENFLAGS) $(SOURCES.x)
+$(TARGETS) : $(SOURCES.x) 
+	rpcgen $(RPCGENFLAGS) $(SOURCES.x)
 
 $(OBJECTS_CLNT) : $(SOURCES_CLNT.c) $(SOURCES_CLNT.h) $(TARGETS_CLNT.c) 
 
@@ -42,5 +42,5 @@ $(SERVER) : $(OBJECTS_SVC)
 	$(LINK.c) -o $(SERVER) $(OBJECTS_SVC) $(LDLIBS)
 
  clean:
-	 $(RM) core $(OBJECTS_CLNT) $(OBJECTS_SVC) $(CLIENT) $(SERVER)
+	 $(RM) core $(TARGETS) $(OBJECTS_CLNT) $(OBJECTS_SVC) $(CLIENT) $(SERVER)
 
