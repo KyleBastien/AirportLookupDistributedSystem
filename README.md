@@ -1,19 +1,19 @@
-# AirportLookupDistributedSystem
+﻿# AirportLookupDistributedSystem
 A Distributed System for looking up the Five Nearest Airport given a City and State. For SEGR-5520.
 
 ##Activity List
 
 ####places_client.c
 
-- [ ] Read arguments in main
-- [ ] Call placesprog_1 function to connect to places_server.c (server) and pass lat/long arguments
-- [ ] This returns back a placeslist (defined in places.x)
-- [ ] Each node in the list has a code, name, state, distance, and *next.
-- [ ] Print out the list
+- [x] Read arguments in main
+- [x] Call placesprog_1 function to connect to places_server.c (server) and pass lat/long arguments
+- [x] This returns back a placeslist (defined in places.x)
+- [x] Each node in the list has a code, name, state, distance, and *next.
+- [x] Print out the list
 
 ####places_svc.c
 
-- [ ] Add code to do the following:
+- [x] Add code to do the following:
 - [x] Read places2k.txt
 - [x] Parse the line that is read and store in a place structure
 - [x] Create prefix tree
@@ -23,31 +23,31 @@ A Distributed System for looking up the Five Nearest Airport given a City and St
 
 ####places_server.c
 
-- [ ] Search for city and state in prefix tree
-- [ ] Get lat/long information from prefix tree
-- [ ] Make a call to get_aiports_1 function to connect to airports_server.c (server) and get 5 nearest neighbors. (yes, the function is called get_aiports_1, I accidentally misspelled “airports” in the .x file. We can go back later and fix this after we get this rpc working)
-- [ ] This call returns a list of 5 nodes. Copy that list in placeslist (defined in places.x)
-- [ ] Each node in the list has a code, name, state, distance, and *next.
+- [x] Search for city and state in prefix tree
+- [x] Get lat/long information from prefix tree
+- [x] Make a call to get_aiports_1 function to connect to airports_server.c (server) and get 5 nearest neighbors. (yes, the function is called get_aiports_1, I accidentally misspelled “airports” in the .x file. We can go back later and fix this after we get this rpc working)
+- [x] This call returns a list of 5 nodes. Copy that list in placeslist (defined in places.x)
+- [x] Each node in the list has a code, name, state, distance, and *next.
 
  
 
 ####airports_svc.c
 
-- [ ] Add code to do the following:
+- [x] Add code to do the following:
 - [x] Read airport-locations.txt [Hesham: Done]
 - [x] Parse the line that is read and store in an airport structure [Hesham: Done]
-- [ ] Make KDtree
-- [ ] Insert each airport into the KD Tree
+- [x] Make KDtree
+- [x] Insert each airport into the KD Tree
 
  
 
 airports_server.c
 
-- [ ] Implement nearest neighbor search by searching KDTree with given params from places_server.c (lat/long).
-- [ ] Store 5 nearest neighbors in a structure defined in airports.x (airportslist)
-- [ ] Each Node in the list has a code, name, state, distance, and *next.
-- [ ] Distance is calculated using given function by Dr. Zhu
-- [ ] Return list with 5 nodes.
+- [x] Implement nearest neighbor search by searching KDTree with given params from places_server.c (lat/long).
+- [x] Store 5 nearest neighbors in a structure defined in airports.x (airportslist)
+- [x] Each Node in the list has a code, name, state, distance, and *next.
+- [x] Distance is calculated using given function by Dr. Zhu
+- [x] Return list with 5 nodes.
 
  
 
@@ -55,7 +55,7 @@ Other Activities:
 
 - [x] Write .x files
 - [x] Add kdtree.h and kdtree.c
-- [ ] Connect places_server.c and airports_server.c
+- [x] Connect places_server.c and airports_server.c
 - [ ] Test
 
  
