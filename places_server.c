@@ -36,7 +36,6 @@ airportslist airportsprog_1(coordinates * coord, char *host)
 #endif   /* DEBUG */
 }
 
-
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 //:: This function takes in the state and city and searches the Trie
 //:: structure for the location using the possibility of partial
@@ -58,9 +57,9 @@ get_places_1_svc(struct location *argp, struct svc_req *rqstp)
 	strcpy(merge, argp->state);
 	strcat(merge, argp->city);
 	for (i = 0; merge[i]; i++)
-	  {
-		merge[i] = tolower(merge[i]);
-	  }
+	{
+	  merge[i] = tolower(merge[i]);
+	}
 
 	// Search Trie for place match, allow patial matches
 	search_result = TrieSearchPartial(root->children,merge);
@@ -96,7 +95,6 @@ get_places_1_svc(struct location *argp, struct svc_req *rqstp)
 		  temp->next = head;
 		  head = temp;
 		}
-		
 		al = al->next;
 	  }
 	  	  
@@ -106,6 +104,3 @@ get_places_1_svc(struct location *argp, struct svc_req *rqstp)
 	
 	return &result;
 }
-
-
-

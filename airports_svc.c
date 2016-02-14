@@ -66,21 +66,17 @@ airportsprog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 static const char filename[] = "airport-locations.txt";
 struct kdtree *kd;
 
-
-
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 //:: This function trims a whitespace off a line read in from a file.
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
 char *trim(char *str)
 {
   char *end;
 
   // Trim leading space
   while(isspace(*str)) str++;
-  /*
-	if(*str == 0)
-	return str;
-  */
+
   // Trim trailing space
   end = str + strlen(str) - 1;
   while(end > str && isspace(*end)) end--;
@@ -91,13 +87,13 @@ char *trim(char *str)
   return str;
 }
 
-
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 //:: This function parses the line that is read and stored in the
 //:: "airportnode" struct.
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-Airport *  parseLine(char * line){
 
+Airport *  parseLine(char * line)
+{
   Airport *a = malloc(sizeof *a);
   int length = strlen(line);
   char temp[255];
@@ -126,14 +122,13 @@ Airport *  parseLine(char * line){
   // Uncomment code below if you want to see the data being printed out
 
   return a;
-
 };
-
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 //:: Function to read the file airport-locations.txt and add the info
 //:: to the KD-Tree.
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
 void readFile() {
   FILE *file = fopen(filename, "r");
   char line[255]; //temp storage for line
@@ -142,14 +137,14 @@ void readFile() {
 	kd_create(2);
 	while (fgets(line, sizeof line, file) != NULL) { //read line
 	  // parse line and get data in struct
-	  if (strchr(line, ',')){
+	  if (strchr(line, ',')) {
 		Airport *a = parseLine(line);
 		float coords[] = {a->latitude, a->longitude};
-		kd_insertf(kd, coords, a);		
+		kd_insertf(kd, coords, a);
 	  }
 	}
 	fclose(file);
-  }  
+  }
 }
 
 
