@@ -75,6 +75,7 @@ struct place {
 
 typedef struct place Place;
 
+
 char *trim(char *str)
 {
   char *end;
@@ -82,7 +83,7 @@ char *trim(char *str)
   // Trim leading space
   while(isspace(*str)) str++;
 
-  if(*str == 0)  // All spaces?
+  if(*str == 0) 
 	return str;
 
   // Trim trailing space
@@ -96,10 +97,8 @@ char *trim(char *str)
 }
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-//:: This function parses the line that is read and stores data in 
-//:: the "place" struct.
+//:: Struct to store place (line in text file).
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
 Place *  parseLine(char * line){
 
   Place *p = malloc(sizeof *p);
@@ -119,11 +118,11 @@ Place *  parseLine(char * line){
   return p;
 };
 
+
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 //:: Function to read file places2k.txt and add that information
 //:: to the trie structure.
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
 void readFile() {
   FILE *file = fopen(filename, "r");
   char line[255]; //temp storage for line
@@ -157,6 +156,7 @@ void readFile() {
 	// Close file before exit
 	fclose(file);
   }
+  
 }
 
 int
@@ -191,5 +191,6 @@ main (int argc, char **argv)
 	svc_run ();
 	fprintf (stderr, "%s", "svc_run returned");
 	exit (1);
+	/* NOTREACHED */
 }
 
