@@ -62,7 +62,10 @@ placesprog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 static const char filename[] = "places2k.txt";
 trieNode_t *root;
 
-// struct to store place (line in text file)
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//:: Struct to store place (line in text file).
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
 struct place {
   char name[255];
   char state[2];
@@ -71,7 +74,6 @@ struct place {
 };
 
 typedef struct place Place;
-
 
 char *trim(char *str)
 {
@@ -93,7 +95,11 @@ char *trim(char *str)
   return str;
 }
 
-// This function parses the line that is reas and stores data in the "place" struct
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//:: This function parses the line that is read and stores data in 
+//:: the "place" struct.
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
 Place *  parseLine(char * line){
 
   Place *p = malloc(sizeof *p);
@@ -113,7 +119,11 @@ Place *  parseLine(char * line){
   return p;
 };
 
-// Function to read file places2k.txt
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//:: Function to read file places2k.txt and add that information
+//:: to the trie structure.
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
 void readFile() {
   FILE *file = fopen(filename, "r");
   char line[255]; //temp storage for line
@@ -147,7 +157,6 @@ void readFile() {
 	// Close file before exit
 	fclose(file);
   }
-  
 }
 
 int
@@ -182,6 +191,5 @@ main (int argc, char **argv)
 	svc_run ();
 	fprintf (stderr, "%s", "svc_run returned");
 	exit (1);
-	/* NOTREACHED */
 }
 

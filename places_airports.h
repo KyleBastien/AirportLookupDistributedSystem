@@ -108,7 +108,7 @@ extern "C" {
   extern int airportsprog_1_freeresult ();
 #endif /* K&R C */
 
-  /* the xdr functions */
+/* the xdr functions */
 
 #if defined(__STDC__) || defined(__cplusplus)
   extern  bool_t xdr_placestype (XDR *, placestype*);

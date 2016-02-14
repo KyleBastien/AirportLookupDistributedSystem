@@ -6,6 +6,13 @@
 
 #include "placesairports.h"
 
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//:: This function makes a call out to places in order to get back
+//:: a list of the five nearest airports and their information. It
+//:: prints the airport code, name, state, and distance from our
+//:: input location.
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
 void
 placesprog_1(char *host, struct location * input)
 {
@@ -28,9 +35,6 @@ placesprog_1(char *host, struct location * input)
 	}
 	
 	list = result_1->readplaces_ret_u.list;
-
-	//printf("%s, %s: %f, %f", list->name, list->state, list->latitude, list->longitude);
-	//list = list->next;
 	
 	while (list != NULL) {
 	  printf("code=%s, name=%s, state=%s, distance:%f\n", list->code, list->name, list->state, list->distance);
@@ -49,18 +53,8 @@ placesprog_1(char *host, struct location * input)
 int
 main (int argc, char *argv[])
 {
-  /*char *host;
-
-	if (argc < 2) {
-		printf ("usage: %s server_host\n", argv[0]);
-		exit (1);
-	}
-	host = argv[1];
-	placesprog_1 (host);
-  */
   char *host;
   struct location * input = malloc(sizeof *input);
-
 
   if (argc < 3) {
 	printf ("usage: %s server_host\n", argv[0]);
@@ -73,5 +67,5 @@ main (int argc, char *argv[])
 
   placesprog_1 (host, input);
   
-exit (0);
+  exit (0);
 }

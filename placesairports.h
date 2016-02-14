@@ -15,7 +15,6 @@
 extern "C" {
 #endif
 
-
   typedef struct placesnode *placeslist;
 
   struct placesnode {
@@ -115,7 +114,7 @@ extern "C" {
   extern int airportsprog_1_freeresult ();
 #endif /* K&R C */
 
-  /* the xdr functions */
+/* the xdr functions */
 
 #if defined(__STDC__) || defined(__cplusplus)
   extern  bool_t xdr_placeslist (XDR *, placeslist*);
@@ -137,22 +136,6 @@ extern "C" {
   extern bool_t xdr_coordinates ();
   extern bool_t xdr_readairports_ret ();
 #endif /* K&R C */
-
-  /* the xdr functions */
-
-  /*#if defined(__STDC__) || defined(__cplusplus)
-  extern  bool_t xdr_airportslist (XDR *, airportslist*);
-  extern  bool_t xdr_airportsnode (XDR *, airportsnode*);
-  extern  bool_t xdr_coordinates (XDR *, coordinates*);
-  extern  bool_t xdr_readairports_ret (XDR *, readairports_ret*);
-
-#else 
-  extern bool_t xdr_airportslist ();
-  extern bool_t xdr_airportsnode ();
-  extern bool_t xdr_coordinates ();
-  extern bool_t xdr_readairports_ret ();
-*/
-  //#endif /* K&R C */
   
 #ifdef __cplusplus
 }

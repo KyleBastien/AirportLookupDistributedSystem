@@ -66,17 +66,9 @@ airportsprog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 static const char filename[] = "airport-locations.txt";
 struct kdtree *kd;
 
-/*// struct to store place (line in text file)
-struct airport {
-  char code[255];
-  char name[255];
-  char state[2];
-  float latitude;
-  float longitude;
-};
-
-typedef struct airport Airport;
-*/
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//:: This function trims a whitespace off a line read in from a file.
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 char *trim(char *s)
 {
@@ -85,16 +77,18 @@ char *trim(char *s)
   return s;
 }
 
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//:: This function parses the line that is read and stored in the 
+//:: "airportnode" struct.
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-// This function parses the line that is reas and stores data in the "airportnode" struct
-Airport *  parseLine(char * line){
-
+Airport *  parseLine(char * line) 
+{
   Airport *a = malloc(sizeof *a);
   int length = strlen(line);
   char temp[255];
   
-  //code
-  strncpy(a->code, line+1, 3);  // code
+  strncpy(a->code, line+1, 3);
 
   //state
   strncpy(a->name, line+19, length-19+3);
@@ -107,20 +101,15 @@ Airport *  parseLine(char * line){
   //longitude
   strncpy(temp, line+12, 7);
   a->longitude = atof(temp);
-
-  // Uncomment code below if you want to see the data being printed out
-
-  /*
-    printf("%s\n",a->code);
-    printf("%s\n",a->name);
-	printf("%.6f",a->latitude);
-	printf("%.6f\n",a->longitude);
-  */
+  
   return a;
-
 };
 
-// Function to read file airport-locations.txt
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//:: Function to read the file airport-locations.txt and add the info
+//:: to the KD-Tree.
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
 void readFile() {
   FILE *file = fopen(filename, "r");
   char line[255]; //temp storage for line
@@ -129,50 +118,15 @@ void readFile() {
 	kd_create(2);
 	while (fgets(line, sizeof line, file) != NULL) { //read line
 	  // parse line and get data in struct
-	  if (strchr(line, ',')){
+	  if (strchr(line, ',')) {
 		Airport *a = parseLine(line);
 		float coords[] = {a->latitude, a->longitude};
 		kd_insertf(kd, coords, a);
-		
-		//printf("Added: %s, %s:, lat:%f lon:%f\n", a->code, a->name, a->latitude, a->longitude);
-		//tree = kd_create(2);
-		//assert(0==kd_insert3(tree, a->latitude, a->longitude, 0.0, a));
-
 	  }
-	  // TODO: Use Airport struct store in KDTREE
-
 	}
 	fclose(file);
   }
-
-  /* struct place {
-	float latitude;
-	float longitude;
-	float blank;
-  };
-
-  struct kdres *result;
-  
-  Airport *a = malloc(sizeof *a);
-  a->latitude = 47.626353;
-  a->longitude = -122.333144;
-  
-  double radius = 0.1;
-  result = kd_nearest_range(tree, a,radius);
-
-  Airport *b = malloc(sizeof *b);
-  double position[3];
-  b = (Airport *)kd_res_item(result,position);
-  
-
-  printf("%s\n",b->code);
-  printf("%s\n",b->name);
-  printf("%.6f",b->latitude);
-  printf("%.6f\n",b->longitude);
-  */
-  
 }
-
 
 int
 main (int argc, char **argv)
@@ -202,9 +156,7 @@ main (int argc, char **argv)
 	}
 	kd = kd_create(2);
 	readFile();
-	//printf("Created KDTree\n");
 	svc_run ();
 	fprintf (stderr, "%s", "svc_run returned");
 	exit (1);
-	/* NOTREACHED */
 }
