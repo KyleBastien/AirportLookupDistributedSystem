@@ -39,6 +39,8 @@ placesprog_1(char *host, struct location * input)
 	if (list) {
 		printf("%s, %s: %f, %f\n", list->name, list->state, list->latitude, list->longitude);
 		list = list->next;
+	} else {
+		printf("Sorry, we couldn't locate that city, please try again.\n");
 	}
 
 	while (list != NULL) {
