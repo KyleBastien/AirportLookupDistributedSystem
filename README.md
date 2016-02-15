@@ -3,11 +3,16 @@ A Distributed System for looking up the Five Nearest Airport given a City and St
 This is a 3-tiered RPC which contains a client (places_client), a server for places (places_server), 
 and a server for airports(airports_server)
 
+#Group Members
+- Matt Smith
+- Hesham Alsaeedi
+- Craig Colomb
+- Kyle McNutt
 
-Compilation:
+#Compilation:
 To compile the code, execute 'make' in the command line.
 
-Running RPC:
+#Running RPC:
 To run the RPC perform the following steps:
 - compile by executing 'make'
 - run ./airports_server&
