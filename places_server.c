@@ -51,6 +51,8 @@ get_places_1_svc(struct location *argp, struct svc_req *rqstp)
 	static readplaces_ret  result;
 	trieNode_t *search_result;
 	char merge[255];
+	char *found_state;
+	char *found_name;
 	int i = 0;
 		
 	// Merge state and city name into a single string (state|city) then convert whole string to lower case
@@ -78,15 +80,18 @@ get_places_1_svc(struct location *argp, struct svc_req *rqstp)
 	  coord->lattitude = search_result->latitude;
 	  coord->longitude = search_result->longitude;
 
+	  strncpy(found_state, search_result->entry, 2);
+	  strncpy(found_name, search_result->entry+2, strlen(search_result->entry));
+
 	  // get nearest airports
 	  al = airportsprog_1(coord, argp->host);
 	  
 	  // Build list of nearest airport information
 	  while (al != NULL) {
 		temp = (placesnode *)malloc(sizeof(placesnode));
-		temp->code = al->code;
-		temp->name = al->name;
-		temp->state = al->state;
+		temp->code = strdup(al->code);
+		temp->name = strdup(al->name);
+		temp->state = strdup(al->state);
 		temp->distance = al->distance;
 		if (head == NULL) {
 		  head = temp;
@@ -97,7 +102,24 @@ get_places_1_svc(struct location *argp, struct svc_req *rqstp)
 		}
 		al = al->next;
 	  }
-	  	  
+
+	  // Add found city/state to list
+	  temp = (placesnode *)malloc(sizeof(placesnode));
+	  temp->state = strdup(found_state);
+	  temp->name = strdup(found_name);
+	  temp->code = strdup("");
+	  temp->latitude = search_result->latitude;
+	  temp->longitude = search_result->longitude;
+	  temp->next = NULL;
+	  if (head == NULL) {
+		head = temp;
+		head->next = NULL;
+	  } else {
+		temp->next = head;
+		head = temp;
+	  }
+	  
+	  free(coord);
 	  list = &result.readplaces_ret_u.list;
 	  *list = head;
 	}

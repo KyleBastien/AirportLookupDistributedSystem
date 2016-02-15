@@ -7,6 +7,7 @@
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 typedef struct trieNode {
   char key;
+  char *entry;
   float latitude;
   float longitude;
   struct trieNode *next;

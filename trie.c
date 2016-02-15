@@ -12,15 +12,17 @@
 #include <stdio.h>
 #include "trie.h"
 #include <stdlib.h>
+#include <string.h>
 
-trieNode_t *TrieCreateNode(char key, float lat, float lon);
+trieNode_t *TrieCreateNode(char key, char *entry, float lat, float lon);
+void TrieAddEntry(trieNode_t **root, char *key, char *entry_name, float lat, float lon);
 
 //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 
 //:: Creates empty trie pointed to by argument:'root' 
 //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 
 void TrieCreate(trieNode_t **root)
 {
-  *root = TrieCreateNode('\0', 0xffffffff, 0xffffffff);
+  *root = TrieCreateNode('\0', "\0", 0xffffffff, 0xffffffff);
 }
 
 //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 
@@ -28,7 +30,7 @@ void TrieCreate(trieNode_t **root)
 //:: and longitude:lon. Returns a pointer to the trie node created, or 
 //:: NULL if unable to allocate memory. 
 //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 
-trieNode_t *TrieCreateNode(char key, float lat, float lon)
+trieNode_t *TrieCreateNode(char key, char *entry_name, float lat, float lon)
 {
   trieNode_t *node = NULL;
   node = (trieNode_t *)malloc(sizeof(trieNode_t));
@@ -42,6 +44,7 @@ trieNode_t *TrieCreateNode(char key, float lat, float lon)
   node->key = key;
   node->next = NULL;
   node->children = NULL;
+  node->entry = strdup(entry_name);
   node->latitude = lat;
   node->longitude = lon;
   node->parent= NULL;
@@ -54,6 +57,15 @@ trieNode_t *TrieCreateNode(char key, float lat, float lon)
 //:: with argument:'key' with data latitude:lat and longitude:lon 
 //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 
 void TrieAdd(trieNode_t **root, char *key, float lat, float lon)
+{
+	TrieAddEntry(root, key, key, lat, lon);
+}
+
+//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 
+//:: Adds new entry to trie of argument:'root' for the string provided 
+//:: with argument:'key' with data latitude:lat and longitude:lon 
+//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 
+void TrieAddEntry(trieNode_t **root, char *key, char *entry_name, float lat, float lon)
 {
   trieNode_t *pTrav = NULL;
 
@@ -72,7 +84,7 @@ void TrieAdd(trieNode_t **root, char *key, float lat, float lon)
     /*First Node*/
 	for(pTrav = *root; *key; pTrav = pTrav->children)
 	{
-	  pTrav->children = TrieCreateNode(*key, 0xffffffff, 0xffffffff);
+	  pTrav->children = TrieCreateNode(*key, "\0", 0xffffffff, 0xffffffff);
 	  pTrav->children->parent = pTrav;
 #ifdef DEBUG
 	  printf("Inserting: [%c]\n",pTrav->children->key);
@@ -80,7 +92,7 @@ void TrieAdd(trieNode_t **root, char *key, float lat, float lon)
 	  key++;
 	}
 
-	pTrav->children = TrieCreateNode('\0', lat, lon);
+	pTrav->children = TrieCreateNode('\0', entry_name, lat, lon);
 	pTrav->children->parent = pTrav;
 #ifdef DEBUG
 	printf("Inserting: [%c]\n",pTrav->children->key);
@@ -113,7 +125,7 @@ void TrieAdd(trieNode_t **root, char *key, float lat, float lon)
     if(*key == pTrav->next->key)
 	{
 	  key++;
-	  TrieAdd(&(pTrav->next), key, lat, lon);
+	  TrieAddEntry(&(pTrav->next), key, entry_name, lat, lon);
 	  return;
 	}
 	pTrav = pTrav->next;
@@ -121,11 +133,11 @@ void TrieAdd(trieNode_t **root, char *key, float lat, float lon)
 
   if(*key)
   {
-    pTrav->next = TrieCreateNode(*key, 0xffffffff, 0xffffffff);
+    pTrav->next = TrieCreateNode(*key, "\0", 0xffffffff, 0xffffffff);
   }
   else
   {
-    pTrav->next = TrieCreateNode(*key, lat, lon);
+    pTrav->next = TrieCreateNode(*key, entry_name, lat, lon);
   }
 
   pTrav->next->parent = pTrav->parent;
@@ -142,7 +154,7 @@ void TrieAdd(trieNode_t **root, char *key, float lat, float lon)
 
   for(pTrav = pTrav->next; *key; pTrav = pTrav->children)
   {
-    pTrav->children = TrieCreateNode(*key, 0xffffffff, 0xffffffff);
+    pTrav->children = TrieCreateNode(*key, "\0", 0xffffffff, 0xffffffff);
     pTrav->children->parent = pTrav;
 #ifdef DEBUG
 	printf("Inserting: [%c]\n",pTrav->children->key);
@@ -150,7 +162,7 @@ void TrieAdd(trieNode_t **root, char *key, float lat, float lon)
 	key++;
   }
 
-  pTrav->children = TrieCreateNode('\0', lat, lon);
+  pTrav->children = TrieCreateNode('\0', entry_name, lat, lon);
   pTrav->children->parent = pTrav;
 #ifdef DEBUG
   printf("Inserting: [%c]\n",pTrav->children->key);
