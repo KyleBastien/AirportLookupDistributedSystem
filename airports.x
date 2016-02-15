@@ -1,8 +1,8 @@
-/*places.x*/
+/*airports.x*/
 
 typedef struct airportsnode* airportslist;
 
-/* a node in the places list*/
+/* a node in the airports list*/
 struct airportsnode{
        string code<>;
        string name<>;
@@ -20,7 +20,7 @@ struct coordinates {
 /*result of a readdir operation*/
 union readairports_ret switch (int err) {
       case 0:
-           airportslist list; /*no error, return places listing*/
+           airportslist list; /*no error, return airports listing*/
       case 1:
            void; /*error occured, nothing returned*/
 };
