@@ -1,11 +1,13 @@
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::  
-//:: This is the server portion for airports which takes in the  
-//:: latitutde and longitude of our search origin and then finds  
-//:: the five nearest airpots to this search origin. This server  
-//:: is called by the places_server.c.  
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::  
+/*
+  Name: Hesham Alsaeedi, Kyle McNutt, Matt Smith, Craig Colomb
+  Date: February 15, 2016
+  Project Name: Group Project (airports_server.c)
 
-
+  Program Description: This is the server portion for airports which takes in the latitude
+  and longitude of our search origin and then finds the five nearest airports to this search
+  origin. This server is called by places_server.c
+*/
+  
 #include <math.h>
 #include "placesairports.h"
 #include "kdtree.h"
@@ -109,9 +111,9 @@ airportslist sortAndAddAirports(int countRequired, float searchOrigin[]) {
   // inserting into list
   airportslist head = NULL;
   airportsnode *temp;
-    
-  for (i=0; i<countRequired; i++) {
-    temp = (airportsnode *)malloc(sizeof(airportsnode));
+  
+  for (i=0; i<countRequired; i++) {	
+	temp = (airportsnode *)malloc(sizeof(airportsnode));
 	temp->code = airports[i].code;
 	temp->name = airports[i].name;
 	temp->state = airports[i].state;
@@ -138,8 +140,6 @@ get_airports_1_svc(struct coordinates *argp, struct svc_req *rqstp)
 {
   static readairports_ret  result;
 
-  //xdr_free((xdrproc_t)xdr_readairports_ret, (char *)&result);
-
   airportslist list;
   airportslist * head;
   airportslist temp = list;
@@ -149,6 +149,6 @@ get_airports_1_svc(struct coordinates *argp, struct svc_req *rqstp)
   
   head = &result.readairports_ret_u.list;
   *head = list;   
-  
+
   return &result;
 }
