@@ -12,7 +12,7 @@
 
 
 #include "placesairports.h"
-
+#include "math.h"
 //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 
 //:: This function makes a call out to places in order to get back 
 //:: a list of the five nearest airports and their information. It 
@@ -51,7 +51,7 @@ placesprog_1(char *host, struct location * input)
 	}
 
 	while (list != NULL) {
-	  printf("code=%s, name=%s, state=%s, distance:%f miles\n", list->code, list->name, list->state, list->distance);
+	  printf("code=%s, name=%s, state=%s, distance:%i miles\n", list->code, list->name, list->state, (int)round(list->distance));
 	  list = list->next;
 	}	
 	xdr_free((xdrproc_t)xdr_readplaces_ret, (char*)result_1);	
