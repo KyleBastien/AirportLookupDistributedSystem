@@ -7,6 +7,13 @@ and a server for airports(airports_server)
 Compilation:
 To compile the code, execute 'make' in the command line.
 
+Running RPC:
+To run the RPC perform the following steps:
+- compile by executing 'make'
+- run ./airports_server&
+- run ./places_server&
+- run ./places_client <server_path> <"city name"> <state>
+
 
 ##Summary of Activity List within each .c file
 
