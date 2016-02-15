@@ -51,7 +51,7 @@ placesprog_1(char *host, struct location * input)
 	}
 
 	while (list != NULL) {
-	  printf("code=%s, name=%s, state=%s, distance:%i miles\n", list->code, list->name, list->state, (int)round(list->distance));
+	  printf("code=%s, name=%s, state=%s, distance:%.2f miles\n", list->code, list->name, list->state, roundf(list->distance*100)/100);
 	  list = list->next;
 	}	
 	xdr_free((xdrproc_t)xdr_readplaces_ret, (char*)result_1);	
