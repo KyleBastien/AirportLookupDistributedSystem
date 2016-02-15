@@ -117,9 +117,9 @@ Airport *  parseLine(char * line)
 
   //city
   strncpy(temp, trim(line), length);
-  strncpy(temp, trim(temp + 19), strlen(temp));
+  strncpy(temp, trim(temp + 19), length);
   temp[strlen(temp) - 3] = '\0';
-  strncpy(a->name, trim(temp), strlen(temp));
+  strcpy(a->name, temp);
   
   //state
   strncpy(temp, line+length-3, 3);
